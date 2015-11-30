@@ -1,14 +1,14 @@
-/* cut-vertex, articulation */
+/* strongly-connected-component, tarjan, SCC */
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
 using namespace std;
-#define MAXN 105
+#define MAXN 2005
 
 struct Edge {
 	int to;
 	int next;
-} edge[MAXN * MAXN];
+} edge[MAXN * MAXN / 2];
 
 int graph[MAXN];
 int cnt_edge;
@@ -16,6 +16,9 @@ int low[MAXN];
 int dfn[MAXN];
 int cnt_dfn;
 int ans;
+bool in_stack[MAXN];
+int ptr_stack;
+int stack[MAXN];
 
 void init_graph() {
 	memset(graph, -1, sizeof(graph));
@@ -29,54 +32,55 @@ void push_edge(int s, int t) {
 	++cnt_edge;
 }
 
-void dfs(int p, int n) {
-	bool cut_vertex = false;
-	int child = 0;
+void dfs(int n) {
+	int top;
 	low[n] = dfn[n] = ++cnt_dfn;
+	stack[ptr_stack] = n;
+	++ptr_stack;
+	in_stack[n] = true;
 	for (int e = graph[n]; ~e; e = edge[e].next) {
 		if (!dfn[edge[e].to]) {
-			dfs(n, edge[e].to);
+			dfs(edge[e].to);
 			low[n] = min(low[n], low[edge[e].to]);
-			if (low[edge[e].to] >= dfn[n]) {
-				cut_vertex = true;
-			}
-			++child;
-		} else if (edge[e].to != p) {
+		} else if (in_stack[edge[e].to]) {
 			low[n] = min(low[n], dfn[edge[e].to]);
 		}
 	}
-	if ((child > 1 || p != -1) && cut_vertex) {
+	if (low[n] == dfn[n]) {
+		do {
+			top = stack[--ptr_stack];
+			in_stack[top] = false;
+		} while (top != n);
 		++ans;
 	}
 }
 
 void init() {
 	init_graph();
+	ptr_stack = 0;
 	ans = cnt_dfn = 0;
 	memset(dfn, 0, sizeof(dfn));
 	memset(low, 0, sizeof(low));
+	memset(in_stack, false, sizeof(in_stack));
 }
 
 int main() {
-	int s, t, n;
-	char line[MAXN * 4], *number;
-	while (scanf("%d\n", &n) && n) {
+	int n, m, v, w, p;
+	while (scanf("%d %d", &n, &m) && (n + m)) {
 		init();
-		do {
-			fgets(line, sizeof(line), stdin);
-			s = 0;
-			for (number = strtok(line, " "); number != NULL; number = strtok(NULL, " ")) {
-				if (s) {
-					t = atoi(number);
-					push_edge(s, t);
-					push_edge(t, s);
-				} else {
-					s = atoi(number);
-				}
+		for (int i = 0; i < m; ++i) {
+			scanf("%d %d %d", &v, &w, &p);
+			push_edge(v, w);
+			if (p == 2) {
+				push_edge(w, v);
 			}
-		} while (s);
-		dfs(-1, 1);
-		printf("%d\n", ans);
+		}
+		for (int i = 1; i <= n; ++i) {
+			if (!dfn[i]) {
+				dfs(i);
+			}
+		}
+		printf("%d\n", ans == 1);
 	}
 	return 0;
 }

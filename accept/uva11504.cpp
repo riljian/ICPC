@@ -1,37 +1,44 @@
 /* strongly-connected-component, tarjan, SCC */
 #include <cstdio>
 #include <cstring>
-#include <map>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <string>
 using namespace std;
-#define MAXN 1005
+#define MAXN 1000005
+#define MAXE 1000005
 
 struct Edge {
 	int to;
+	int from;
 	int next;
-} edge[MAXN * MAXN];
+} edge[MAXE], redge[MAXE];
 
 int graph[MAXN];
+int rgraph[MAXN];
 int cnt_edge;
 int low[MAXN];
 int dfn[MAXN];
 int cnt_dfn;
 int ans;
 bool in_stack[MAXN];
-map<string, int> name2num;
+set<int> now_scc;
 vector<int> stack;
 
 void init_graph() {
 	memset(graph, -1, sizeof(graph));
+	memset(rgraph, -1, sizeof(rgraph));
 	cnt_edge = 0;
 }
 
 void push_edge(int s, int t) {
 	edge[cnt_edge].to = t;
 	edge[cnt_edge].next = graph[s];
+	redge[cnt_edge].from = s;
+	redge[cnt_edge].next = rgraph[t];
 	graph[s] = cnt_edge;
+	rgraph[t] = cnt_edge;
 	++cnt_edge;
 }
 
@@ -49,18 +56,32 @@ void dfs(int n) {
 		}
 	}
 	if (low[n] == dfn[n]) {
+		now_scc.clear();
+		int cnt_in_edge = 0;
+		for (vector<int>::reverse_iterator it = stack.rbegin(); it != stack.rend(); ++it) {
+			now_scc.insert(*it);
+			if (*it == n) {
+				break;
+			}
+		}
 		do {
 			top = stack.back();
 			stack.pop_back();
 			in_stack[top] = false;
+			for (int e = rgraph[top]; ~e; e = redge[e].next) {
+				if (now_scc.find(redge[e].from) == now_scc.end()) {
+					++cnt_in_edge;
+				}
+			}
 		} while (top != n);
-		++ans;
+		if (!cnt_in_edge) {
+			++ans;
+		}
 	}
 }
 
 void init() {
 	init_graph();
-	name2num.clear();
 	stack.clear();
 	ans = cnt_dfn = 0;
 	memset(dfn, 0, sizeof(dfn));
@@ -69,27 +90,16 @@ void init() {
 }
 
 int main() {
-	string person1, person2;
-	char surname[15], firstname[15];
-	int p, t;
-	while (scanf("%d %d\n", &p, &t) && (p + t)) {
+	int cases, n, m, s, t;
+	scanf("%d", &cases);
+	while (cases--) {
 		init();
-		for (int i = 0; i < p; ++i) {
-			scanf("%15[^,], %s\n", surname, firstname);
-			person1 = surname;
-			person1 += firstname;
-			name2num[person1] = i;
+		scanf("%d %d", &n, &m);
+		while (m--) {
+			scanf("%d %d", &s, &t);
+			push_edge(s, t);
 		}
-		for (int i = 0; i < t; ++i) {
-			scanf("%15[^,], %s\n", surname, firstname);
-			person1 = surname;
-			person1 += firstname;
-			scanf("%15[^,], %s\n", surname, firstname);
-			person2 = surname;
-			person2 += firstname;
-			push_edge(name2num[person1], name2num[person2]);
-		}
-		for (int i = 0; i < p; ++i) {
+		for (int i = 1; i <= n; ++i) {
 			if (!dfn[i]) {
 				dfs(i);
 			}
