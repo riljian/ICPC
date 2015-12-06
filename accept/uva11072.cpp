@@ -1,3 +1,4 @@
+/* convex hull, graham's scan */
 #include <cstdio>
 #include <algorithm>
 using namespace std;
@@ -39,18 +40,21 @@ void sort_counterclockwise(Point in[], int n) {
 }
 
 int graham_scan(Point in[], int n, Point stack[]) {
-	int top = 3;
+	int top = 2;
 	sort_counterclockwise(in, n);
 	for (int i = 0; i < 3; ++i) {
 		stack[i] = in[i];
 	}
 	for (int i = 3; i < n; ++i) {
-		while (cross(stack[top - 2], stack[top - 1], in[i]) <= 0) {
+		while (cross(stack[top - 1], in[i], stack[top]) >= 0) {
 			--top;
+			if (top == 1) {
+				break;
+			}
 		}
-		stack[top] = in[i];
-		++top;
+		stack[++top] = in[i];
 	}
+	++top;
 	return top;
 }
 
