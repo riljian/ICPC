@@ -1,52 +1,53 @@
+/* disjoin set */
 #include <cstdio>
-#include <string>
 #include <cstring>
-#include <algorithm>
 #include <map>
+#include <string>
+#include <algorithm>
 using namespace std;
-#define MAXL 35
 #define MAXN 5005
+#define MAXL 35
 
-int disjoin[MAXN];
-int find(int);
-void join(int, int);
+int ds[MAXN], set_size[MAXN];
+
+int find_set(int);
+void join_set(int, int);
 
 int main() {
-    int m, n, count[MAXN], ans;
-    char ani1[MAXL], ani2[MAXL];
-    map<string, int> dict;
-    while (scanf("%d %d\n", &m, &n) && (m + n)) {
-        dict.clear();
-        memset(count, 0, sizeof(count));
-        ans = 1;
-        for (int i = 0; i < m; ++i) {
-            scanf("%s", ani1);
-            dict[string(ani1)] = i;
-            disjoin[i] = i;
-        }
+    int n, r, ans;
+    char a[MAXL], b[MAXL];
+    map<string, int> m;
+    while (~scanf("%d %d", &n, &r) && n) {
         for (int i = 0; i < n; ++i) {
-            scanf("%s %s", ani1, ani2);
-            join(dict[string(ani1)], dict[string(ani2)]);
+            scanf("%s", a);
+            m[a] = i;
+            ds[i] = i;
         }
-        for (int i = 0; i < m; ++i) {
-            count[find(i)]++;
+        while (r--) {
+            scanf("%s %s", a, b);
+            join_set(m[a], m[b]);
         }
-        for (int i = 0; i < m; ++i) {
-            ans = max(ans, count[i]);
+        memset(set_size, 0, sizeof(set_size));
+        for (int i = 0; i < n; ++i) {
+            set_size[find_set(i)]++;
+        }
+        ans = 1;
+        for (int i = 0; i < n; ++i) {
+            ans = max(ans, set_size[i]);
         }
         printf("%d\n", ans);
     }
     return 0;
 }
 
-int find(int x) {
-    if (x == disjoin[x]) {
-        return x;
+int find_set(int n) {
+    if (ds[n] == n) {
+        return n;
     } else {
-        return disjoin[x] = find(disjoin[x]);
+        return ds[n] = find_set(ds[n]);
     }
 }
 
-void join(int x, int y) {
-    disjoin[find(x)] = disjoin[find(y)];
+void join_set(int m, int n) {
+    ds[find_set(m)] = ds[find_set(n)];
 }
