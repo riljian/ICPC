@@ -1,4 +1,4 @@
-/* cut-vertex, articulation */
+/* cut vertex, articulation */
 #include <iostream>
 #include <string>
 #include <map>

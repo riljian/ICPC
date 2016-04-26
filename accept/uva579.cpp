@@ -1,3 +1,4 @@
+/* implement */
 #include <cstdio>
 using namespace std;
 #define abs(x) ((x)<0?(-(x)):(x))

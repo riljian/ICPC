@@ -1,4 +1,4 @@
-/* dfs, bfs */
+/* BFS, DFS */
 #include <cstdio>
 #include <cstring>
 #include <stack>

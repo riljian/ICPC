@@ -1,4 +1,4 @@
-/* stack, queue, priority_queue */
+/* stack, queue, priority queue */
 #include <cstdio>
 #include <stack>
 #include <queue>

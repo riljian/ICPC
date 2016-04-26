@@ -1,4 +1,4 @@
-/* depth-first-search, dominator */
+/* depth first search, dominator, DFS */
 #include <cstdio>
 #include <set>
 #include <cstring>

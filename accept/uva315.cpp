@@ -1,4 +1,4 @@
-/* cut-vertex, articulation */
+/* cut vertex, articulation */
 #include <cstdio>
 #include <cstring>
 #include <algorithm>

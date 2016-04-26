@@ -1,4 +1,4 @@
-/* cut-edge, bridge */
+/* cut edge, bridge */
 #include <cstdio>
 #include <algorithm>
 #include <cstring>

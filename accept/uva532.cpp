@@ -1,4 +1,4 @@
-/* Breadth-First-Search, bfs */
+/* breadth first search, BFS */
 #include <cstdio>
 #include <cstring>
 #include <queue>
