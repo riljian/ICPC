@@ -1,4 +1,4 @@
-/* strongly connected component, tarjan, SCC, DAG, directed acyclic graph, DP, dynamic programming */
+/* strongly connected component, Tarjan, SCC, DAG, directed acyclic graph, DP, dynamic programming */
 #include <cstdio>
 #include <cstring>
 #include <set>

@@ -1,4 +1,4 @@
-/* strongly connected component, tarjan, SCC */
+/* strongly connected component, Tarjan, SCC */
 #include <cstdio>
 #include <cstring>
 #include <set>
